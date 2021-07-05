@@ -15,7 +15,7 @@ def test_fibonacci_case_sub():
 
 def test_fibonacci_case_empty():
     """Testing that given sequence is fib sequence"""
-    assert check_fibonacci([]) == False
+    assert not check_fibonacci([])
 
 
 def test_fibonacci_case_zero():

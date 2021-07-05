@@ -16,4 +16,4 @@ def test_sum_of_four_case_0():
 
 
 def test_sum_of_four_case_big_sub_array():
-    assert find_maximal_subarray_sum([3, 22, 2, -17, 5], 111) == 27
+    assert find_maximal_subarray_sum([3, 22, -5, 6], 111) == 26
