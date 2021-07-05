@@ -3,7 +3,7 @@ from typing import Sequence
 
 def check_fibonacci(data: Sequence[int]) -> bool:
     length = len(data)
-    if data[0] != 0:
+    if length == 0 or data[0] != 0:
         return False
     if length >= 2 and data[1] != 1:
         return False

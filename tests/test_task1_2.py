@@ -13,6 +13,11 @@ def test_fibonacci_case_sub():
     assert check_fibonacci([0, 1, 1])
 
 
+def test_fibonacci_case_empty():
+    """Testing that given sequence is fib sequence"""
+    assert check_fibonacci([]) == False
+
+
 def test_fibonacci_case_zero():
     """Testing that given sequence is fib sequence"""
     assert check_fibonacci([0])
