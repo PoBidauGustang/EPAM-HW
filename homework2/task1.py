@@ -1,8 +1,8 @@
-from typing import List
+from typing import AnyStr, List
 from unicodedata import category
 
 
-def tokenize(input_file):
+def tokenize(input_file: AnyStr) -> List[List]:
     buffer = []
     words = []
     while char := input_file.read(1):
@@ -41,18 +41,13 @@ def get_longest_diverse_words(file_path: str, encoding="unicode-escape") -> List
 
 def get_rarest_char(file_path: str, encoding="unicode-escape") -> str:
     with open(file_path, "r", encoding=encoding) as file_input:
-        list_char = []
-        while char := file_input.read(1):
-            list_char.append(char)
         dict_char = {}
-        for item in list_char:
-            if item in dict_char.keys():
-                dict_char[item] += 1
+        while char := file_input.read(1):
+            if char in dict_char.keys():
+                dict_char[char] += 1
             else:
-                dict_char[item] = 1
-        print(dict_char)
+                dict_char[char] = 1
         rarest_char = sorted(dict_char, key=dict_char.get, reverse=False)[0]
-
     return rarest_char
 
 
@@ -77,15 +72,12 @@ def count_non_ascii_chars(file_path: str, encoding="unicode-escape") -> int:
 
 def get_most_common_non_ascii_char(file_path: str, encoding="unicode-escape") -> str:
     with open(file_path, "r", encoding=encoding) as file_input:
-        list_char = []
-        num_common_char = 0
-        common_char = ""
+        dict_char = {}
         while char := file_input.read(1):
-            list_char.append(char)
-        for item in set(list_char):
-            if not item.isascii():
-                count_items = list_char.count(item)
-                if count_items > num_common_char:
-                    num_common_char = count_items
-                    common_char = item
+            if not char.isascii():
+                if char in dict_char.keys():
+                    dict_char[char] += 1
+                else:
+                    dict_char[char] = 1
+        common_char = sorted(dict_char, key=dict_char.get, reverse=True)[0]
     return common_char

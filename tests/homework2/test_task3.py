@@ -12,5 +12,9 @@ def test_combinations_common():
     ]
 
 
+def test_combinations_zero():
+    assert combinations([]) == []
+
+
 def test_combinations_cut():
     assert combinations([1], [3], [5]) == [[1, 3, 5]]
