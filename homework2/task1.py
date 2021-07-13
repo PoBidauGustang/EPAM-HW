@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import AnyStr, List
 from unicodedata import category
 
@@ -7,7 +8,7 @@ def tokenize(input_file: AnyStr) -> List[List]:
     words = []
     while char := input_file.read(1):
         if category(char) == "Ll" or category(char) == "Lu":
-            buffer += char
+            buffer.append(char)
             continue
         else:
             if buffer:
@@ -41,12 +42,9 @@ def get_longest_diverse_words(file_path: str, encoding="unicode-escape") -> List
 
 def get_rarest_char(file_path: str, encoding="unicode-escape") -> str:
     with open(file_path, "r", encoding=encoding) as file_input:
-        dict_char = {}
+        dict_char = defaultdict(int)
         while char := file_input.read(1):
-            if char in dict_char.keys():
-                dict_char[char] += 1
-            else:
-                dict_char[char] = 1
+            dict_char[char] += 1
         rarest_char = sorted(dict_char, key=dict_char.get, reverse=False)[0]
     return rarest_char
 
@@ -72,12 +70,9 @@ def count_non_ascii_chars(file_path: str, encoding="unicode-escape") -> int:
 
 def get_most_common_non_ascii_char(file_path: str, encoding="unicode-escape") -> str:
     with open(file_path, "r", encoding=encoding) as file_input:
-        dict_char = {}
+        dict_char = defaultdict(int)
         while char := file_input.read(1):
             if not char.isascii():
-                if char in dict_char.keys():
-                    dict_char[char] += 1
-                else:
-                    dict_char[char] = 1
+                dict_char[char] += 1
         common_char = sorted(dict_char, key=dict_char.get, reverse=True)[0]
     return common_char
