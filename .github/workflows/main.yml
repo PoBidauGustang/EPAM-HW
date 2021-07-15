@@ -20,3 +20,4 @@ jobs:
           black --check .
           isort --check .
           py.test tests
+          pytest --doctest-modules
