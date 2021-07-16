@@ -20,4 +20,5 @@ def cache(times: int) -> Callable:
 
         memory = {}
         return wrapper
+
     return decorator
