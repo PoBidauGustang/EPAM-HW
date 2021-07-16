@@ -6,7 +6,7 @@ def cache(times: int) -> Callable:
 
     initial_times = times
 
-    def num_try(func):
+    def decorator(func):
         def wrapper(*args):
             dumped_arg = dumps(args)
             nonlocal times
@@ -15,9 +15,9 @@ def cache(times: int) -> Callable:
                 return memory[dumped_arg]
             result = memory[dumped_arg] = func(*args)
             times = initial_times
+            print(result)
             return result
 
         memory = {}
         return wrapper
-
-    return num_try
+    return decorator
