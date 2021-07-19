@@ -1,5 +1,3 @@
-import pytest
-
 from homework2.task2 import major_and_minor_elem
 
 

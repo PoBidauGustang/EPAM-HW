@@ -1,5 +1,3 @@
-import pytest
-
 from homework3.task3 import Filter, make_filter
 
 sample_data = [

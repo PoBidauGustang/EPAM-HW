@@ -1,5 +1,3 @@
-import pytest
-
 from homework3.task2 import func_optimize_slow_calculate
 
 

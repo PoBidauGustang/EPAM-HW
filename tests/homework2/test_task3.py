@@ -1,5 +1,3 @@
-import pytest
-
 from homework2.task3 import combinations
 
 
