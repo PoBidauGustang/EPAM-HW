@@ -48,3 +48,8 @@ def test_read_magic_number_not_a_number(get_file):
         testfile.write("dgsgrw")
     with pytest.raises(ValueError, match="Something went wrong"):
         read_magic_number(get_file)
+
+
+def test_read_magic_number_not_a_file_or_directory(get_file):
+    with pytest.raises(FileNotFoundError, match="No such file or directory"):
+        read_magic_number("non-existent file")
