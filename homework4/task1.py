@@ -32,9 +32,9 @@ def read_magic_number(path: str) -> bool:
     try:
         with open(path) as file_input:
             line = file_input.readline()
-            try:
-                return True if 1 <= float(line) < 3 else False
-            except ValueError:
-                raise ValueError("Something went wrong")
     except FileNotFoundError:
-        raise FileNotFoundError("No such file or directory")
+        raise ValueError("No such file or directory")
+    try:
+        return True if 1 <= float(line) < 3 else False
+    except ValueError:
+        raise ValueError("Something went wrong")
