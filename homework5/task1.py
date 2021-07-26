@@ -42,31 +42,80 @@ import datetime
 
 
 class Teacher:
-    def __init__(self, first_name, last_name):
+    """This is a class initiates the teachers who assigns and reviews homeworks
+
+    :param first_name: first name of a teacher
+    :type first_name: str
+    :param last_name: last name of a teacher
+    :type last_name: str
+    """
+
+    def __init__(self, first_name: str, last_name: str) -> None:
+        """Constructor method"""
         self.last_name = last_name
         self.first_name = first_name
 
-    def create_homework(self, text, days_for_work):
+    def create_homework(self, text: str, days_for_work: int) -> type:
+        """Returns a :class:'Homework' objects representing
+        home work for students
+
+        :param text: homework text
+        :type text: str
+        :param days_for_work: time to complete homework expressed in days
+        :type days_for_work: int
+        :return: A :class:'Homework', which represent homeworks
+        :rtype: type
+        """
         return Homework(text, days_for_work)
 
 
-class Student:
-    def __init__(self, first_name, last_name):
-        self.last_name = last_name
-        self.first_name = first_name
-
-    def do_homework(self, homework):
-        return homework if homework.is_active() else print("You are late")
-
-
 class Homework:
-    def __init__(self, text, days_for_work):
+    """This is a class initiates the homework task whuch shold be done
+
+    :param text: homework text
+    :type text: str
+    :param days_for_work: time to complete homework expressed in days
+    :type days_for_work: int
+    """
+
+    def __init__(self, text: str, days_for_work: int) -> None:
+        """Constructor method"""
         self.text = text
         self.created = datetime.datetime.now()
         self.deadline = datetime.timedelta(days=days_for_work)
 
-    def is_active(self):
+    def is_active(self) -> bool:
+        """Сhecks if there is time left to complete the homework
+
+        :return: `True` if there is time left to complete the homework, `False` otherwise
+        :rtype: bool
+        """
         return datetime.datetime.now() < self.created + self.deadline
+
+
+class Student:
+    """This is a class initiates the students who do homework
+
+    :param first_name: first name of a student
+    :type first_name: str
+    :param last_name: last name of a student
+    :type last_name: str
+    """
+
+    def __init__(self, first_name: str, last_name: str) -> None:
+        """Constructor method"""
+        self.last_name = last_name
+        self.first_name = first_name
+
+    def do_homework(self, homework: Homework) -> type:
+        """Сhecks if the task is overdue and returns :class:'Homework' object
+
+        :param homework: a :class:'Homework' objects, which provide homework to complete
+        :type homework: __main__.Homework
+        :return: A :class:'Homework' object, which represent homework
+        :rtype: __main__.Homework
+        """
+        return homework if homework.is_active() else print("You are late")
 
 
 # if __name__ == '__main__':

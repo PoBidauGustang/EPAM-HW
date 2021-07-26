@@ -20,18 +20,15 @@ print(custom_sum.__original_func)  # <function custom_sum at <some_id>>
 import functools
 
 
-def save_name_doc(original_func):
-    def decorator(func):
-        def inner(*args, **kwargs):
-            return func(*args, **kwargs)
+def save_name_doc(func):
+    def inner(*args, **kwargs):
+        return func
 
-        inner.__name__ = original_func.__name__
-        inner.__doc__ = original_func.__doc__
-        inner.__original_func = original_func
+    inner.__name__ = func.__name__
+    inner.__doc__ = func.__doc__
+    func.__original_func = func
 
-        return inner
-
-    return decorator
+    return inner
 
 
 def print_result(func):
@@ -61,3 +58,4 @@ if __name__ == "__main__":
 
     # the result returns without printing
     without_print(1, 2, 3, 4)
+    print(custom_sum.__original_func)
