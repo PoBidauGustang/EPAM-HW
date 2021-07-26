@@ -69,89 +69,10 @@ class Person:
     :type last_name: str
     """
 
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name: str, last_name: str) -> None:
         """Constructor method"""
         self.last_name = last_name
         self.first_name = first_name
-
-
-class Teacher(Person):
-    """This is a class initiates the teachers who assigns and reviews homeworks
-
-    :param Person: helper parent class
-    :type Person: type
-    :param homework_done: storage of reviewed homeworks
-    :type homework_done: collections.defaultdict
-    """
-
-    homework_done = defaultdict(set)
-
-    def create_homework(self, text, days_for_work):
-        """Returns a :class:'Homework' objects representing
-        home work for students
-
-        :param text: homework text
-        :type text: str
-        :param days_for_work: time to complete homework expressed in days
-        :type days_for_work: int
-        :return: A :class:'Homework', which represent homeworks
-        :rtype: type
-        """
-        return Homework(text, days_for_work)
-
-    def check_homework(self, homework_result):
-        """Try to add reviewed homework to the storage 'homework_done'
-
-        :param homework_result: homework result
-        :type homework_result: __main__.HomeworkResult
-        :raises RepeatedResultError: raises an error if homework result had been added earlier to storage
-        :return: `True` if attempt was successful, `False` otherwise
-        :rtype: bool
-        """
-        if homework_result in self.homework_done[homework_result.homework]:
-            raise RepeatedResultError("This result has been added earlier")
-        if len(homework_result.solution) > 5:
-            if not self.homework_done[homework_result.homework]:
-                self.homework_done[homework_result.homework] = set()
-            self.homework_done[homework_result.homework].add(homework_result)
-            return True
-        return False
-
-    @classmethod
-    def reset_results(self, homework=None):
-        """Reset homework result in storage or entire storage
-
-        :param homework: a :class:'Homework' objects, which represent homeworks, defaults to None
-        :type homework: __main__.Homework, optional
-        """
-        if homework:
-            self.homework_done[homework] = set()
-        else:
-            self.homework_done.clear()
-
-
-class Student(Person):
-    """This is a class initiates the students who do homework
-
-    :param Person: helper parent class
-    :type Person: type
-    """
-
-    def do_homework(self, homework, result):
-        """Try to solve homework and return result
-
-        :param homework: a :class:'Homework' objects, which provide homework to complete
-        :type homework: __main__.Homework
-        :param result: homework result information
-        :type result: str
-        :raises DeadlineError: raises an error if student has no time to do homework
-        :return: A :class:'HomeworkResult', which represent homework result
-        :rtype: type
-        """
-        if homework.is_active():
-            return HomeworkResult(self, homework, result)
-        else:
-            raise DeadlineError("You are late")
 
 
 class Homework:
@@ -163,19 +84,43 @@ class Homework:
     :type days_for_work: int
     """
 
-    def __init__(self, text, days_for_work):
+    def __init__(self, text: str, days_for_work: int) -> None:
         """Constructor method"""
         self.text = text
         self.created = datetime.datetime.now()
         self.deadline = datetime.timedelta(days=days_for_work)
 
-    def is_active(self):
+    def is_active(self) -> bool:
         """Сhecks if there is time left to complete the homework
 
         :return: `True` if there is time left to complete the homework, `False` otherwise
         :rtype: bool
         """
         return datetime.datetime.now() < self.created + self.deadline
+
+
+class Student(Person):
+    """This is a class initiates the students who do homework
+
+    :param Person: helper parent class
+    :type Person: Person
+    """
+
+    def do_homework(self, homework: Homework, result: str):
+        """Try to solve homework and return result
+
+        :param homework: a :class:'Homework' objects, which provide homework to complete
+        :type homework: __main__.Homework
+        :param result: homework result information
+        :type result: str
+        :raises DeadlineError: raises an error if student has no time to do homework
+        :return: A :class:'HomeworkResult', which represent homework result
+        :rtype: HomeworkResult
+        """
+        if homework.is_active():
+            return HomeworkResult(self, homework, result)
+        else:
+            raise DeadlineError("You are late")
 
 
 class HomeworkResult:
@@ -190,7 +135,7 @@ class HomeworkResult:
     :raises TypeError: raises an error if not :class:'Homework' objects was given
     """
 
-    def __init__(self, author, homework, solution):
+    def __init__(self, author: Student, homework: Homework, solution: str) -> None:
         """Constructor method"""
         if isinstance(homework, Homework):
             self.homework = homework
@@ -199,6 +144,59 @@ class HomeworkResult:
         self.solution = solution
         self.author = author
         self.created = datetime.datetime.now()
+
+
+class Teacher(Person):
+    """This is a class initiates the teachers who assigns and reviews homeworks
+
+    :param Person: helper parent class
+    :type Person: Person
+    :param homework_done: storage of reviewed homeworks
+    :type homework_done: collections.defaultdict
+    """
+
+    homework_done = defaultdict(set)
+
+    def create_homework(self, text: str, days_for_work: int) -> Homework:
+        """Returns a :class:'Homework' objects representing
+        home work for students
+
+        :param text: homework text
+        :type text: str
+        :param days_for_work: time to complete homework expressed in days
+        :type days_for_work: int
+        :return: A :class:'Homework', which represent homeworks
+        :rtype: Homework
+        """
+        return Homework(text, days_for_work)
+
+    def check_homework(self, homework_result: HomeworkResult) -> bool:
+        """Try to add reviewed homework to the storage 'homework_done'
+
+        :param homework_result: homework result
+        :type homework_result: __main__.HomeworkResult
+        :raises RepeatedResultError: raises an error if homework result had been added earlier to storage
+        :return: `True` if attempt was successful, `False` otherwise
+        :rtype: bool
+        """
+        if homework_result in self.homework_done[homework_result.homework]:
+            raise RepeatedResultError("This result has been added earlier")
+        if len(homework_result.solution) > 5:
+            self.homework_done[homework_result.homework].add(homework_result)
+            return True
+        return False
+
+    @classmethod
+    def reset_results(self, homework: Homework = None) -> None:
+        """Reset homework result in storage or entire storage
+
+        :param homework: a :class:'Homework' objects, which represent homeworks, defaults to None
+        :type homework: __main__.Homework, optional
+        """
+        if homework:
+            self.homework_done[homework] = set()
+        else:
+            self.homework_done.clear()
 
 
 # if __name__ == "__main__":
