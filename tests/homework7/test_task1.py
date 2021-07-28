@@ -28,3 +28,7 @@ def test_one_more_positive():
 
 def test_for_absent_value():
     assert find_occurrences(example_tree, "nothing") == 0
+
+
+def test_for_occurrences_in_dict_keys():
+    assert find_occurrences(example_tree, "complex_key") == 1

@@ -19,23 +19,25 @@ Example:
      Return value should be "x wins!"
 
 """
-from itertools import product
+from itertools import chain, product
 from typing import List
 
 
 def tic_tac_toe_checker(board: List[List]) -> str:
     all_values = [symbol for line in board for symbol in line]
-    vertical_and_diagonal_lines = list(product(board[0], board[1], board[2]))
+    dash = 0
+    all_possible_vertical_and_diagonal_combinations = list(
+        product(board[0], board[1], board[2])
+    )
     horizontal_lines = [x for x in board]
 
-    dash = 0
-    win_lines = []
+    vertical_and_diagonal_lines = []
     values_for_win_lines = [0, 5, 13, 21, 26]
-    for index, line in enumerate(vertical_and_diagonal_lines):
+    for index, line in enumerate(all_possible_vertical_and_diagonal_combinations):
         if index in values_for_win_lines:
-            win_lines.append(line)
+            vertical_and_diagonal_lines.append(line)
 
-    win_lines.extend(horizontal_lines)
+    win_lines = chain(vertical_and_diagonal_lines, horizontal_lines)
     for line in win_lines:
         if line.count("x") == 3:
             return "x wins!"

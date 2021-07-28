@@ -23,3 +23,9 @@ def test_empty_strings():
     a = ""
     b = ""
     assert backspace_compare(a, b)
+
+
+def test_string_starts_with_sharp():
+    a = "#fg"
+    b = "fg"
+    assert backspace_compare(a, b)

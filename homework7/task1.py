@@ -20,7 +20,7 @@ example_tree = {
         "jhl": "RED",
         "complex_key": {
             "key1": "value1",
-            "key2": "RED",
+            "RED": "RED",
             "key3": ["a", "lot", "of", "values", {"nested_key": "RED"}],
         },
     },
@@ -33,7 +33,7 @@ def find_occurrences(tree: dict, element: Any) -> int:
 
     def recursive_search(tree, element):
         nonlocal counter
-        tree = list(tree.values()) if isinstance(tree, dict) else list(tree)
+        tree = list(tree.items()) if isinstance(tree, dict) else list(tree)
         for item in tree:
             if isinstance(item, str):
                 if item == element:
@@ -46,4 +46,4 @@ def find_occurrences(tree: dict, element: Any) -> int:
 
 
 if __name__ == "__main__":
-    print(find_occurrences(example_tree, "RED"))  # 6
+    print(find_occurrences(example_tree, "RED"))  # 7
