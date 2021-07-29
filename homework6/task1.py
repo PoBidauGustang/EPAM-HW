@@ -12,33 +12,39 @@ reset_instances_counter - сбросить счетчик экземпляров
 
 
 def instances_counter(cls):
-    class InnerClass(cls):
-        counter = 0
+    # cls.counter = 0
 
-        @classmethod
-        def init_counter(cls):
-            if "counter" not in cls.__dict__:
-                cls.counter = 0
 
-        def __init__(self, *args, **kwargs):
-            self.init_counter()
-            super().__init__(*args, **kwargs)
-            self.__class__.counter += 1
+    
+    def __new__(cls):
+        cls.init_counter()
+        obj = super(cls, cls).__new__(cls)
+        cls.counter += 1
+        return obj
 
-        @classmethod
-        def get_created_instances(cls):
-            cls.init_counter()
-            return cls.counter
 
-        @classmethod
-        def reset_instances_counter(cls):
-            cls.init_counter()
-            try:
-                return cls.counter
-            finally:
-                cls.counter = 0
+    @classmethod
+    def init_counter(cls):
+        if "counter" not in cls.__dict__:
+            cls.counter = 0
 
-    return InnerClass
+    @classmethod
+    def get_created_instances(cls):
+        cls.init_counter()
+        return cls.counter
+
+    @classmethod
+    def reset_instances_counter(cls):
+        cls.init_counter()
+        tmp_counter = cls.counter
+        cls.counter = 0
+        return tmp_counter
+    
+    cls.__new__ = __new__
+    cls.init_counter = init_counter
+    cls.get_created_instances = get_created_instances
+    cls.reset_instances_counter = reset_instances_counter
+    return cls
 
 
 @instances_counter
