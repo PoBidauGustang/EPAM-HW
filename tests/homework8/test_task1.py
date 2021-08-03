@@ -28,7 +28,5 @@ def test_assign_attr_with_double_underscore():
 
 
 def test_assign_attr_starts_with_num():
-    with pytest.raises(
-        ValueError, match="The key must not start with a number"
-    ):
+    with pytest.raises(ValueError, match="The key must not start with a number"):
         storage["1"]
