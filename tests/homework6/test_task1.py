@@ -2,8 +2,10 @@ from homework6.task1 import User
 
 
 class User2(User):
+    def __new__(cls, a):
+        return super(cls, cls).__new__(cls)
+
     def __init__(self, a):
-        self.a = a
         super().__init__()
 
 

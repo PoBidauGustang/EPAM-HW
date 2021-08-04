@@ -12,16 +12,13 @@ reset_instances_counter - сбросить счетчик экземпляров
 
 
 def instances_counter(cls):
-    # cls.counter = 0
+    cls.counter = 0
 
-
-    
-    def __new__(cls):
+    def __new__(parent):
         cls.init_counter()
         obj = super(cls, cls).__new__(cls)
-        cls.counter += 1
+        parent.counter += 1
         return obj
-
 
     @classmethod
     def init_counter(cls):
@@ -39,7 +36,7 @@ def instances_counter(cls):
         tmp_counter = cls.counter
         cls.counter = 0
         return tmp_counter
-    
+
     cls.__new__ = __new__
     cls.init_counter = init_counter
     cls.get_created_instances = get_created_instances
@@ -60,11 +57,11 @@ class User:
 #     # user.reset_instances_counter()  # 3
 
 #     class User2(User):
+#         def __new__(cls, a):
+#             return super(cls, cls).__new__(cls)
 #         def __init__(self, a):
-#             self.a = a
 #             super().__init__()
 
-#     # print(User2.__dict__)
 #     assert User2.get_created_instances() == 0
 #     User2("test")
 #     assert User2.get_created_instances() == 1
