@@ -18,13 +18,13 @@ class KeyValueStorage:
         for line in content:
             attr, value = line.split("=")
             value = possibly_convert_str_to_int(value)
-            try:
-                self.kw_storage_dict[attr] = value
-            except:
-                raise ValueError("Something went wrong during the attributes assigning")
+            self.kw_storage_dict[attr] = value
 
     def __getattr__(self, item: Any) -> Any:
-        return self.kw_storage_dict[item]
+        try:
+            return self.kw_storage_dict[item]
+        except KeyError:
+            raise KeyError("Something wrong with attribute")
 
     def __getitem__(self, item: Any) -> Any:
         if not item.isidentifier():
