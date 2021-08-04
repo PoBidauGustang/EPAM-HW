@@ -24,7 +24,7 @@ class KeyValueStorage:
         try:
             return self.kw_storage_dict[item]
         except KeyError:
-            raise KeyError("Something wrong with attribute")
+            pass
 
     def __getitem__(self, item: Any) -> Any:
         if not item.isidentifier():
