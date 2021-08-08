@@ -1,0 +1,4 @@
+Hello!
+I`m here
+to test
+universal_file_counter
