@@ -1,8 +1,7 @@
 import sqlite3
-from sqlite3.dbapi2 import Cursor
 
 
-def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> dict:
+def convert_row_from_tuple_to_dict(cursor: sqlite3.Cursor, row: tuple) -> dict:
     dictionary = {}
     for index, col in enumerate(cursor.description):
         dictionary[col[0]] = row[index]
@@ -12,7 +11,7 @@ def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> dict:
 def create_cursor(func):
     def wrapper(self, *args, **kwargs):
         connection = sqlite3.connect(self.database_name)
-        connection.row_factory = dict_factory
+        connection.row_factory = convert_row_from_tuple_to_dict
         cursor = connection.cursor()
         try:
             return func(self, cursor, *args, **kwargs)
@@ -47,9 +46,9 @@ class TableData:
         )
         return cursor.fetchone()
 
-    def __iter__(self):
+    def __iter__(self) -> None:
         self.connection = sqlite3.connect(self.database_name)
-        self.connection.row_factory = dict_factory
+        self.connection.row_factory = convert_row_from_tuple_to_dict
         self.cursor = self.connection.cursor()
         yield from self.cursor.execute(f"SELECT * from {self.table_name}")
         self.cursor.close()

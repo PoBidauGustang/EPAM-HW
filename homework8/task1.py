@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Union
 
 
-def possibly_convert_str_to_int(string: str) -> Any:
+def possibly_convert_str_to_int(string: str) -> Union[int, str]:
     try:
         integer = int(string)
         return integer
@@ -20,13 +20,13 @@ class KeyValueStorage:
             value = possibly_convert_str_to_int(value)
             self.kw_storage_dict[attr] = value
 
-    def __getattr__(self, item: Any) -> Any:
+    def __getattr__(self, item: Union[int, str]) -> Union[int, str]:
         try:
             return self.kw_storage_dict[item]
         except KeyError:
             pass
 
-    def __getitem__(self, item: Any) -> Any:
+    def __getitem__(self, item: Union[int, str]) -> Union[int, str]:
         if not item.isidentifier():
             raise ValueError("The key must not start with a number")
         return self.kw_storage_dict[item]
