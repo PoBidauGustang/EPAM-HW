@@ -11,7 +11,7 @@ file2.txt:
 4
 6
 
->>> list(merge_sorted_files(["file1.txt", "file2.txt"]))
+list(merge_sorted_files(["file1.txt", "file2.txt"]))
 [1, 2, 3, 4, 5, 6]
 """
 from pathlib import Path
