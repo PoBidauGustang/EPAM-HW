@@ -11,7 +11,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def suppressor(*exceptions):
+def suppressor(*exceptions: tuple) -> None:
     try:
         yield
     except exceptions:
@@ -21,11 +21,11 @@ def suppressor(*exceptions):
 
 
 class Suppressor:
-    def __init__(self, *exceptions):
+    def __init__(self, *exceptions: tuple) -> None:
         self._exception = exceptions
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         pass
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
         return issubclass(exc_type, self._exception)
