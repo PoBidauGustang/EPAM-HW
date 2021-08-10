@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run script
         run: |
-          pip install black isort pytest requests
+          pip install black isort pytest requests beautifulsoup4 aiohttp
           ls -la
           black --check .
           isort --profile black --check .
