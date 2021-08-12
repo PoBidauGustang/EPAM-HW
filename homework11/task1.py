@@ -36,7 +36,4 @@ class SimplifiedEnum(type):
 
     def __getattr__(cls, item: str) -> str:
         if item in cls.__dict__[f"_{cls.__name__}__keys"]:
-
             return item
-        else:
-            raise KeyError("No such key in class`s attribute '__keys'")

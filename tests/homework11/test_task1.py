@@ -24,5 +24,4 @@ def test_positive():
 
 
 def test_non_existing_key():
-    with pytest.raises(KeyError, match="No such key in class`s attribute '__keys'"):
-        ColorsEnum.no_such_key
+    assert not ColorsEnum.no_such_key
