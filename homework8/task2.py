@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Generator
 
 
 def convert_row_from_tuple_to_dict(cursor: sqlite3.Cursor, row: tuple) -> dict:
@@ -46,7 +47,7 @@ class TableData:
         )
         return cursor.fetchone()
 
-    def __iter__(self) -> None:
+    def __iter__(self) -> Generator:
         self.connection = sqlite3.connect(self.database_name)
         self.connection.row_factory = convert_row_from_tuple_to_dict
         self.cursor = self.connection.cursor()
