@@ -47,7 +47,7 @@ class TableData:
         )
         return cursor.fetchone()
 
-    def __iter__(self) -> Generator:
+    def __iter__(self) -> Generator[str, None, None]:
         self.connection = sqlite3.connect(self.database_name)
         self.connection.row_factory = convert_row_from_tuple_to_dict
         self.cursor = self.connection.cursor()
