@@ -10,7 +10,6 @@ universal_file_counter(test_dir, "txt", str.split)
 6
 
 """
-from os import listdir
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -18,13 +17,10 @@ from typing import Callable, Optional
 def universal_file_counter(
     dir_path: Path, file_extension: str, tokenizer: Optional[Callable] = None
 ) -> int:
-    list_of_files = listdir(dir_path)
+    files = Path(dir_path).glob(f"*.{file_extension}")
     count = 0
-    for file in list_of_files:
-        if not file.endswith(file_extension):
-            continue
-
-        with open(f"{dir_path}/{file}") as file_to_count:
+    for file in files:
+        with open(f"{file}") as file_to_count:
             for line in file_to_count:
                 if tokenizer:
                     count += len(tokenizer.__call__(line))

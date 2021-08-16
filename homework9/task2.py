@@ -16,8 +16,6 @@ def suppressor(*exceptions: tuple) -> None:
         yield
     except exceptions:
         pass
-    finally:
-        pass
 
 
 class Suppressor:

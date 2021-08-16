@@ -18,18 +18,18 @@ def test_from_example():
 
 
 def test_for_iterator_protocol():
-    iterator_1 = merge_sorted_files([path_to_file1, path_to_file2])
-    assert "__iter__" in dir(iterator_1)
-    assert "__next__" in dir(iterator_1)
+    iterator = merge_sorted_files([path_to_file1, path_to_file2])
+    assert "__iter__" in dir(iterator)
+    assert "__next__" in dir(iterator)
 
 
 def test_next_method():
-    iterator_2 = merge_sorted_files([path_to_file1, path_to_file2])
-    assert next(iterator_2) == 1
-    assert next(iterator_2) == 2
-    assert next(iterator_2) == 3
-    assert next(iterator_2) == 4
-    assert next(iterator_2) == 5
-    assert next(iterator_2) == 6
+    iterator = merge_sorted_files([path_to_file1, path_to_file2])
+    assert next(iterator) == 1
+    assert next(iterator) == 2
+    assert next(iterator) == 3
+    assert next(iterator) == 4
+    assert next(iterator) == 5
+    assert next(iterator) == 6
     with pytest.raises(StopIteration):
-        assert next(iterator_2)
+        assert next(iterator)
