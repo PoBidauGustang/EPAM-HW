@@ -1,7 +1,14 @@
 import datetime
+import os
+
+os.environ["DJANGO_SETTINGS_MODULE"] = "posting.settings"
+import django
+
+django.setup()
+
+from django.test import TestCase
 
 from application.models import Homework
-from django.test import TestCase
 
 
 class HomeworkTestCase(TestCase):
