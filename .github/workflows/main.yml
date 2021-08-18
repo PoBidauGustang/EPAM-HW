@@ -16,6 +16,7 @@ jobs:
       - name: Run script
         run: |
           pip install black isort pytest requests django
+          export DJANGO_SETTINGS_MODULE=mysite.settings
           ls -la
           black --check .
           isort --profile black --check .
