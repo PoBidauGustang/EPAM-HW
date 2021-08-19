@@ -15,9 +15,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Run script
         run: |
-          pip install black isort pytest requests django pytest-django
+          pip install black isort pytest requests django
           ls -la
           black --check .
           isort --profile black --check .
           py.test tests
           pytest --doctest-modules
+        env:
+          echo DJANGO_SETTINGS_MODULE="homework12.homework12.settings"
