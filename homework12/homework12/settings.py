@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-o#o+gv^6j(ol)8wnk+kldx+jtnivl=jpr^x4wunrb8ei-h@i59"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "homework12.homework12.application.apps.ApplicationConfig",
+    "homework12.application.apps.ApplicationConfig",
 ]
 
 MIDDLEWARE = [
