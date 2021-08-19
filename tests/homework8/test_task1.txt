@@ -1,0 +1,8 @@
+name=kek
+last_name=top
+power=9001
+song=shadilay
+float_number=9.7
+__dict__=will_not_overwrite_built-in_method
+__secret=it works
+1=smth
