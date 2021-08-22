@@ -1,6 +1,6 @@
 import pytest
 
-from homework12.project.orm.models import Homework, HomeworkResult, Student, Teacher
+from orm.models import Homework, HomeworkResult, Student, Teacher
 
 
 @pytest.mark.parametrize(
