@@ -21,3 +21,5 @@ jobs:
           isort --profile black --check .
           py.test tests
           pytest --doctest-modules
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings
