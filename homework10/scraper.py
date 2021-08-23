@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import asyncio
 import json
+import re
 import time
 import xml.etree.ElementTree as ET
 from typing import Callable, Generator, List, Union
@@ -45,35 +46,42 @@ def get_table_SP_500_async() -> List[str]:
     return ioloop.run_until_complete(request_controller(urls))
 
 
-def get_table_SP_500_text(pages: list) -> Generator[BeautifulSoup, None, None]:
-    for page in pages:
-        yield BeautifulSoup(page, "lxml")
+def get_table_SP_500_text(pages: list) -> List[BeautifulSoup]:
+    pages_text = [BeautifulSoup(page, "lxml") for page in pages]
+    return pages_text
 
 
-pages_text = list(get_table_SP_500_text(get_table_SP_500_async()))
+pages_text = get_table_SP_500_text(get_table_SP_500_async())
 
 
-def get_company_names(pages: List[BeautifulSoup]) -> Generator[str, None, None]:
-    for page in pages:
-        a_title_href_tags = page.select("tbody tr td a[title]")
-        for tag in a_title_href_tags:
-            company_name = tag["title"]
-            yield company_name
-
-
-def get_company_links(pages: List[BeautifulSoup]) -> Generator[str, None, None]:
+def get_company_names(pages: List[BeautifulSoup]) -> List[str]:
+    company_names = []
     for page in pages:
         a_title_href_tags = page.select("tbody tr td a[title]")
-        for tag in a_title_href_tags:
-            link = tag.get("href")
-            yield ("https://markets.businessinsider.com" + link)
+        company_name_of_page = [tag["title"] for tag in a_title_href_tags]
+        company_names.extend(company_name_of_page)
+    return company_names
 
 
-def get_year_growth(pages: List[BeautifulSoup]) -> Generator[str, None, None]:
+def get_company_links(pages: List[BeautifulSoup]) -> List[str]:
+    company_links = []
+    for page in pages:
+        a_title_href_tags = page.select("tbody tr td a[title]")
+        company_link_of_page = [
+            "https://markets.businessinsider.com" + tag.get("href")
+            for tag in a_title_href_tags
+        ]
+        company_links.extend(company_link_of_page)
+    return company_links
+
+
+def get_year_growth(pages: List[BeautifulSoup]) -> List[str]:
+    year_growth = []
     for page in pages:
         growth_data_tags = page.select("tbody tr td span")[9::10]
-        for tag in growth_data_tags:
-            yield tag.getText()
+        year_growth_of_page = [tag.getText() for tag in growth_data_tags]
+        year_growth.extend(year_growth_of_page)
+    return year_growth
 
 
 def get_company_pages_async() -> List[str]:
@@ -81,17 +89,16 @@ def get_company_pages_async() -> List[str]:
     return ioloop.run_until_complete(request_controller(get_company_links(pages_text)))
 
 
-def get_company_pages(pages: list) -> Generator[BeautifulSoup, None, None]:
-    for page in pages:
-        yield BeautifulSoup(page, "lxml")
+def get_company_pages(pages: list) -> List[BeautifulSoup]:
+    company_pages = [BeautifulSoup(page, "lxml") for page in pages]
+    return company_pages
 
 
 company_pages_text = get_company_pages(get_company_pages_async())
 
 
-def get_share_prices(
-    pages: Generator[BeautifulSoup, None, None]
-) -> Generator[float, None, None]:
+def get_share_prices(pages: List[BeautifulSoup]) -> List[float]:
+    share_prices = []
     for company_page in pages:
         share_price_in_dollars = float(
             company_page.find(class_="price-section__current-value")
@@ -101,29 +108,30 @@ def get_share_prices(
         share_price_in_roubles = share_price_in_dollars * get_dollar_in_rubles(
             url_currencies
         )
-        yield round(share_price_in_roubles, 4)
+        share_prices.append(round(share_price_in_roubles, 4))
+    return share_prices
 
 
-def get_company_codes(
-    pages: Generator[BeautifulSoup, None, None]
-) -> Generator[str, None, None]:
-    for company_page in pages:
-        yield company_page.select_one("h1 span span").getText().replace(", ", "")
+def get_company_codes(pages: List[BeautifulSoup]) -> List[str]:
+    company_codes = [
+        company_page.select_one("h1 span span").getText().replace(", ", "")
+        for company_page in pages
+    ]
+    return company_codes
 
 
-def get_p_e_ratios(
-    pages: Generator[BeautifulSoup, None, None]
-) -> Generator[str, None, None]:
+def get_p_e_ratios(pages: List[BeautifulSoup]) -> List[str]:
+    p_e_ratios = []
     for company_page in pages:
         p_e_ratio_raw = company_page.select(".snapshot .snapshot__data-item")[
             6
         ].getText()
-        yield float(p_e_ratio_raw.strip().split()[0].replace(",", ""))
+        p_e_ratios.append(float(p_e_ratio_raw.strip().split()[0].replace(",", "")))
+    return p_e_ratios
 
 
-def get_lost_profits(
-    pages: Generator[BeautifulSoup, None, None]
-) -> Generator[str, None, None]:
+def get_lost_profits(pages: List[BeautifulSoup]) -> List[str]:
+    lost_profits = []
     for company_page in pages:
         week_low_52_raw = company_page.select(".snapshot .snapshot__data-item")[
             4
@@ -136,7 +144,8 @@ def get_lost_profits(
 
         lost_profit = (week_high_52 - week_low_52) / week_low_52
         lost_profit_in_percents = f"{round((lost_profit * 100), 2)}%"
-        yield lost_profit_in_percents
+        lost_profits.append(lost_profit_in_percents)
+    return lost_profits
 
 
 def get_collected_data(
@@ -147,7 +156,8 @@ def get_collected_data(
     p_e_ratios: Callable,
     year_growth: Callable,
     lost_profits: Callable,
-) -> Generator[dict, None, None]:
+) -> List[dict]:
+    collected_data = []
     for name, link, share_price, code, p_e, growth, profit in zip(
         company_names,
         company_links,
@@ -166,19 +176,18 @@ def get_collected_data(
             "growth": growth,
             "lost profit": profit,
         }
-        yield company_dict
+        collected_data.append(company_dict)
+    return collected_data
 
 
-collected_data = list(
-    get_collected_data(
-        get_company_names(pages_text),
-        get_company_links(pages_text),
-        get_share_prices(company_pages_text),
-        get_company_codes(company_pages_text),
-        get_p_e_ratios(company_pages_text),
-        get_year_growth(pages_text),
-        get_lost_profits(company_pages_text),
-    )
+collected_data = get_collected_data(
+    get_company_names(pages_text),
+    get_company_links(pages_text),
+    get_share_prices(company_pages_text),
+    get_company_codes(company_pages_text),
+    get_p_e_ratios(company_pages_text),
+    get_year_growth(pages_text),
+    get_lost_profits(company_pages_text),
 )
 
 
