@@ -10,6 +10,7 @@ universal_file_counter(test_dir, "txt", str.split)
 6
 
 """
+from itertools import chain
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -19,11 +20,10 @@ def universal_file_counter(
 ) -> int:
     files = Path(dir_path).glob(f"*.{file_extension}")
     count = 0
-    for file in files:
-        with open(f"{file}") as file_to_count:
-            for line in file_to_count:
-                if tokenizer:
-                    count += len(tokenizer.__call__(line))
-                else:
-                    count += 1
+    if tokenizer:
+        text = (tokenizer(path.read_text()) for path in files)
+        count = sum(map(len, text))
+    else:
+        text = chain.from_iterable(((path.read_text().split("\n")) for path in files))
+        count = len(tuple(text))
     return count
