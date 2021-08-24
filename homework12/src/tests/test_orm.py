@@ -1,5 +1,4 @@
 import pytest
-
 from orm.models import Homework, HomeworkResult, Student, Teacher
 
 
