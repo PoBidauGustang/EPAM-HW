@@ -1,18 +1,12 @@
 #!/usr/bin/python3
 import asyncio
 import json
-import re
-import time
 import xml.etree.ElementTree as ET
-from typing import Callable, Generator, List, Union
+from typing import Callable, List
 
 import aiohttp
 import requests
 from bs4 import BeautifulSoup
-
-start_time = time.time()
-
-url_currencies = "http://www.cbr.ru/scripts/XML_daily.asp"
 
 
 def get_dollar_in_rubles(url: str) -> float:
@@ -24,13 +18,7 @@ def get_dollar_in_rubles(url: str) -> float:
     return float(dollar_in_rubles.replace(",", "."))
 
 
-urls = [
-    f"https://markets.businessinsider.com/index/components/s&p_500?p={i}"
-    for i in range(1, 12)
-]
-
-
-async def request_controller(urls: Union[list, Generator[str, None, None]]) -> List:
+async def request_controller(urls: List[str]) -> List:
     async with aiohttp.ClientSession() as session:
         tasks = [asyncio.ensure_future(request_worker(session, url)) for url in urls]
         return await asyncio.gather(*tasks)
@@ -49,9 +37,6 @@ def get_table_SP_500_async() -> List[str]:
 def get_table_SP_500_text(pages: list) -> List[BeautifulSoup]:
     pages_text = [BeautifulSoup(page, "lxml") for page in pages]
     return pages_text
-
-
-pages_text = get_table_SP_500_text(get_table_SP_500_async())
 
 
 def get_company_names(pages: List[BeautifulSoup]) -> List[str]:
@@ -92,9 +77,6 @@ def get_company_pages_async() -> List[str]:
 def get_company_pages(pages: list) -> List[BeautifulSoup]:
     company_pages = [BeautifulSoup(page, "lxml") for page in pages]
     return company_pages
-
-
-company_pages_text = get_company_pages(get_company_pages_async())
 
 
 def get_share_prices(pages: List[BeautifulSoup]) -> List[float]:
@@ -180,17 +162,6 @@ def get_collected_data(
     return collected_data
 
 
-collected_data = get_collected_data(
-    get_company_names(pages_text),
-    get_company_links(pages_text),
-    get_share_prices(company_pages_text),
-    get_company_codes(company_pages_text),
-    get_p_e_ratios(company_pages_text),
-    get_year_growth(pages_text),
-    get_lost_profits(company_pages_text),
-)
-
-
 def get_top_10_expensive_stocks(collected_data: List[Callable]) -> None:
     top_10_expensive_stocks = sorted(
         collected_data, key=lambda k: k["share price"], reverse=True
@@ -221,10 +192,24 @@ def get_top_10_highest_lost_profit(collected_data: List[Callable]) -> None:
         json.dump(top_10_highest_lost_profit, outfile, indent=4)
 
 
-print(f"Process took {time.time() - start_time}")
-
-
 if __name__ == "__main__":
+    url_currencies = "http://www.cbr.ru/scripts/XML_daily.asp"
+    urls = [
+        f"https://markets.businessinsider.com/index/components/s&p_500?p={i}"
+        for i in range(1, 12)
+    ]
+    pages_text = get_table_SP_500_text(get_table_SP_500_async())
+    company_pages_text = get_company_pages(get_company_pages_async())
+    collected_data = get_collected_data(
+        get_company_names(pages_text),
+        get_company_links(pages_text),
+        get_share_prices(company_pages_text),
+        get_company_codes(company_pages_text),
+        get_p_e_ratios(company_pages_text),
+        get_year_growth(pages_text),
+        get_lost_profits(company_pages_text),
+    )
+
     get_top_10_expensive_stocks(collected_data)
     get_top_10_lowest_p_e_ratio(collected_data)
     get_top_10_highest_growth(collected_data)
