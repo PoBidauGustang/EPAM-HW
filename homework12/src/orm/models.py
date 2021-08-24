@@ -4,10 +4,9 @@ from django.db import models
 class Homework(models.Model):
     """Create table Homework in db"""
 
-    text = models.TextField(blank=False)
-    created = models.DateTimeField(blank=False)
-    deadline = models.IntegerField(blank=False)
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, null=True)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text
@@ -16,11 +15,11 @@ class Homework(models.Model):
 class HomeworkResult(models.Model):
     """Create table HomeworkResult in db"""
 
-    homework = models.ForeignKey("Homework", on_delete=models.PROTECT, null=True)
-    student = models.ForeignKey("Student", on_delete=models.PROTECT, null=True)
-    solution = models.TextField(blank=False)
-    created = models.DateTimeField(blank=False)
-    accepted = models.BooleanField(blank=False)
+    homework = models.ForeignKey("Homework", on_delete=models.CASCADE)
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
+    solution = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField()
 
     def __str__(self):
         return self.solution
@@ -29,8 +28,8 @@ class HomeworkResult(models.Model):
 class Student(models.Model):
     """Create table Student in db"""
 
-    first_name = models.CharField(max_length=50, blank=False)
-    last_name = models.CharField(max_length=50, blank=False)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.first_name + self.last_name
@@ -39,8 +38,8 @@ class Student(models.Model):
 class Teacher(models.Model):
     """Create table Teacher in db"""
 
-    first_name = models.CharField(max_length=50, blank=False)
-    last_name = models.CharField(max_length=50, blank=False)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.first_name + self.last_name

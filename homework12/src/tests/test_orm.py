@@ -13,7 +13,7 @@ from orm.models import Homework, HomeworkResult, Student, Teacher
     ],
 )
 @pytest.mark.django_db
-def test_positive_cases(create_tables, record, result):
+def test_positive(create_tables, record, result):
     """Test that all created records exist in test db"""
 
     teacher = Teacher.objects.get(first_name="Daniil")
@@ -24,7 +24,7 @@ def test_positive_cases(create_tables, record, result):
 
 
 @pytest.mark.django_db
-def test_negative_case(create_tables):
+def test_negative(create_tables):
     """Test that attempt to get an empty query throw an exception"""
     with pytest.raises(Exception):
         teacher = Teacher.objects.get(first_name="Noname")

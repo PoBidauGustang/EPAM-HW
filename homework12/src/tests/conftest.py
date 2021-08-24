@@ -14,9 +14,13 @@ def create_record_in_db(some_class, **kwargs):
 def create_tables():
     "The fixture creates tables before running tests"
     teacher = create_record_in_db(Teacher, first_name="Daniil", last_name="Shadrin")
-    homework = create_record_in_db(Homework, task="ORM", teacher=teacher)
+    homework = create_record_in_db(Homework, text="ORM", teacher=teacher)
     student = create_record_in_db(Student, first_name="Roman", last_name="Petrov")
     hw_result = create_record_in_db(
-        HomeworkResult, homework=homework, solution="hw solution", student=student
+        HomeworkResult,
+        homework=homework,
+        solution="hw solution",
+        student=student,
+        accepted=True,
     )
     yield
